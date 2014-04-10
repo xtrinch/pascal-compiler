@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type='text/xsl' href='xsl/semanal.xsl'?>
+<semanal>
+<absnode pos="(2:1-9:4)" kind="Program">
+<absnode pos="(2:9-2:19)" kind="DeclName" value="TestProgram">
+</absnode>
+<absnode pos="(0:0-0:0)" kind="Decls">
+</absnode>
+<absnode pos="(5:1-9:3)" kind="BlockStmt">
+<absnode pos="(6:3-8:42)" kind="Stmts">
+<absnode pos="(6:3-6:26)" kind="AssignStmt">
+<absnode pos="(6:3-6:4)" kind="ValName" value="v3">
+</absnode>
+<absnode pos="(6:9-6:26)" kind="BinExpr" value="ARRACCESS">
+<seminfo kind="VALUE" value="null"/>
+<absnode pos="(6:9-6:60)" kind="BinExpr" value="RECACCESS">
+<seminfo kind="VALUE" value="null"/>
+<absnode pos="(6:9-6:18)" kind="Alloc">
+<absnode pos="(6:10-6:17)" kind="TypeName" value="mystruct">
+</absnode>
+</absnode>
+<absnode pos="(6:20-6:23)" kind="ValName" value="mem4">
+</absnode>
+</absnode>
+<absnode pos="(6:25-6:25)" kind="AtomExpr(INT)" value="2">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+</absnode>
+</absnode>
+<absnode pos="(7:3-7:35)" kind="AssignStmt">
+<absnode pos="(7:3-7:4)" kind="ValName" value="v5">
+</absnode>
+<absnode pos="(7:9-7:35)" kind="Alloc">
+<absnode pos="(7:10-7:34)" kind="ArrayType">
+<absnode pos="(7:17-7:17)" kind="AtomExpr(INT)" value="3">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+<absnode pos="(7:20-7:20)" kind="AtomExpr(INT)" value="6">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+<absnode pos="(7:26-7:34)" kind="PointerType">
+<absnode pos="(7:27-7:34)" kind="TypeName" value="mystruct">
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+<absnode pos="(8:3-8:42)" kind="AssignStmt">
+<absnode pos="(8:3-8:4)" kind="ValName" value="v4">
+</absnode>
+<absnode pos="(8:9-8:42)" kind="BinExpr" value="ARRACCESS">
+<seminfo kind="VALUE" value="null"/>
+<absnode pos="(8:9-8:35)" kind="Alloc">
+<absnode pos="(8:10-8:34)" kind="ArrayType">
+<absnode pos="(8:17-8:17)" kind="AtomExpr(INT)" value="3">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+<absnode pos="(8:20-8:20)" kind="AtomExpr(INT)" value="6">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+<absnode pos="(8:26-8:34)" kind="PointerType">
+<absnode pos="(8:27-8:34)" kind="TypeName" value="mystruct">
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+<absnode pos="(8:37-8:41)" kind="BinExpr" value="MUL">
+<seminfo kind="VALUE" value="null"/>
+<absnode pos="(8:37-8:37)" kind="AtomExpr(INT)" value="3">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+<absnode pos="(8:41-8:41)" kind="AtomExpr(INT)" value="1">
+<seminfo kind="VALUE" value="null"/>
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+</absnode>
+</semanal>
