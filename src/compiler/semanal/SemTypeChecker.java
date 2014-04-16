@@ -1,5 +1,10 @@
 package compiler.semanal;
 import compiler.abstree.*;
+import compiler.report.*;
+import compiler.semanal.type.SemAtomType;
+import compiler.semanal.type.SemPointerType;
+import compiler.semanal.type.SemType;
+import compiler.semanal.type.SemTypeError;
 import compiler.abstree.tree.AbsAlloc;
 import compiler.abstree.tree.AbsArrayType;
 import compiler.abstree.tree.AbsAssignStmt;
@@ -41,14 +46,32 @@ public class SemTypeChecker implements AbsVisitor {
 
 	@Override
 	public void visit(AbsArrayType acceptor) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(AbsAssignStmt acceptor) {
-		// TODO Auto-generated method stub
+		acceptor.dstExpr.accept(this);
+		acceptor.srcExpr.accept(this);
 		
+		SemType src = SemDesc.getActualType(acceptor.srcExpr);
+		SemType dst = SemDesc.getActualType(acceptor.dstExpr);
+		
+		if(src != null && dst != null) {
+			// lahko prilagodimo tipa med sabo ?
+			if(src.coercesTo(dst)) {
+				// razen atomarnih tipov in kazalcev ne moremo prirejati med sabo
+				if(src instanceof SemAtomType || src instanceof SemPointerType) {
+					SemDesc.setActualType(acceptor, src);
+				} else {
+					Report.error("Expected integer or pointer type!", acceptor.begLine, acceptor.begColumn, acceptor.endLine, acceptor.endColumn, 1);
+				}
+				
+			} else {
+				Report.error("Types do not match!", acceptor.begLine, acceptor.begColumn, acceptor.endLine, acceptor.endColumn, 1);
+			}
+			
+		}
 	}
 
 	@Override
@@ -59,13 +82,15 @@ public class SemTypeChecker implements AbsVisitor {
 
 	@Override
 	public void visit(AbsAtomType acceptor) {
-		// TODO Auto-generated method stub
+		SemAtomType type = new SemAtomType(acceptor.type);
+		SemDesc.setActualType(acceptor, type);
 		
 	}
 
 	@Override
 	public void visit(AbsBinExpr acceptor) {
-		// TODO Auto-generated method stub
+		acceptor.fstExpr.accept(this);
+		acceptor.sndExpr.accept(this);
 		
 	}
 
@@ -83,8 +108,6 @@ public class SemTypeChecker implements AbsVisitor {
 
 	@Override
 	public void visit(AbsConstDecl acceptor) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
