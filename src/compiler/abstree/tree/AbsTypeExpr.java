@@ -7,6 +7,8 @@ package compiler.abstree.tree;
  * @see AbsArrayType
  * @see AbsRecortType
  * @see AbsPointerType
+ * 
+ * ++++ AbsTypeName
  */
 public abstract class AbsTypeExpr extends AbsTree {
 }

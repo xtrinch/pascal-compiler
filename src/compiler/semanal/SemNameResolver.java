@@ -10,6 +10,7 @@ import compiler.abstree.tree.AbsBinExpr;
 import compiler.abstree.tree.AbsBlockStmt;
 import compiler.abstree.tree.AbsCallExpr;
 import compiler.abstree.tree.AbsConstDecl;
+import compiler.abstree.tree.AbsConstExpr;
 import compiler.abstree.tree.AbsDecl;
 import compiler.abstree.tree.AbsDeclName;
 import compiler.abstree.tree.AbsDecls;
@@ -34,28 +35,35 @@ import compiler.abstree.tree.AbsValName;
 import compiler.abstree.tree.AbsVarDecl;
 import compiler.abstree.tree.AbsWhileStmt;
 import compiler.report.Report;
+import compiler.semanal.type.SemAtomType;
+import compiler.semanal.type.SemSubprogramType;
 
 public class SemNameResolver implements AbsVisitor {
-
-	
-	// WHERE EXACTLY DO WE USE SET NAME DECL????
-	
-	// WHY DO WE ERASE THINGS FROM THE SEM TABLE WITH OLD SCOPE
 	
 	public boolean error;
 
 	@Override
 	public void visit(AbsAlloc acceptor) {
-		// TODO Auto-generated method stub
-		
+		acceptor.type.accept(this);
 	}
 
 	@Override
 	public void visit(AbsArrayType acceptor) {
+		
 		acceptor.hiBound.accept(this);
 		acceptor.loBound.accept(this);
-		acceptor.type.accept(this);
 		
+		Integer low = SemDesc.getActualConst(acceptor.loBound);
+		Integer high = SemDesc.getActualConst(acceptor.hiBound);
+		
+		if(low != null && high != null) {
+		} else error("Cannot get numerical values for low and high bound of array!", acceptor);
+		
+		
+		if(low < 0 || high < 0 || high < low) {
+			error("You can only use positive values for array bounds, and they must be in ascending order!", acceptor);
+		}
+		acceptor.type.accept(this);
 	}
 
 	@Override
@@ -67,6 +75,7 @@ public class SemNameResolver implements AbsVisitor {
 	@Override
 	public void visit(AbsAtomConst acceptor) {
 		 // izrazi za opis vrednosti - konstante atomarnih tipov.
+		
 		switch(acceptor.type) {
 		case AbsAtomConst.INT:
 			SemDesc.setActualConst(acceptor, Integer.parseInt(acceptor.value));
@@ -95,13 +104,10 @@ public class SemNameResolver implements AbsVisitor {
 		if(acceptor.oper == AbsBinExpr.RECACCESS)
 			return;
 		acceptor.sndExpr.accept(this);
-		// kaj narediti ce je array access 13 ?
-		
-		
 		Integer fst = SemDesc.getActualConst(acceptor.fstExpr);
 		Integer snd = SemDesc.getActualConst(acceptor.sndExpr);
 		if (fst != null && snd != null){
-			//error("Null operand!", acceptor);
+			// if its a pointer it will be null
 			switch (acceptor.oper) {
 			case AbsBinExpr.ADD:
 					SemDesc.setActualConst(acceptor, fst + snd);
@@ -110,11 +116,30 @@ public class SemNameResolver implements AbsVisitor {
 				SemDesc.setActualConst(acceptor, fst - snd);
 				break;
 			case AbsBinExpr.MUL:
-				SemDesc.setActualConst(acceptor, fst * snd);
+				SemDesc.setActualConst(acceptor, fst *	 snd);
 				break;
 			case AbsBinExpr.DIV:
-				if (snd != 0)
-					SemDesc.setActualConst(acceptor, fst / snd);
+				if (snd != 0)	SemDesc.setActualConst(acceptor, fst / snd);
+				break;
+			case AbsBinExpr.GTH:
+				if(fst > snd)	SemDesc.setActualConst(acceptor, 1);
+				else	SemDesc.setActualConst(acceptor, 0);
+				break;
+			case AbsBinExpr.LTH:
+				if(fst < snd)	SemDesc.setActualConst(acceptor, 1);
+				else	SemDesc.setActualConst(acceptor, 0);
+				break;
+			case AbsBinExpr.GEQ:
+				if(fst >= snd)	SemDesc.setActualConst(acceptor, 1);
+				else	SemDesc.setActualConst(acceptor, 0);
+				break;
+			case AbsBinExpr.LEQ:
+				if(fst <= snd)	SemDesc.setActualConst(acceptor, 1);
+				else	SemDesc.setActualConst(acceptor, 0);
+				break;
+			case AbsBinExpr.EQU:
+				if(fst == snd)	SemDesc.setActualConst(acceptor, 1);
+				else	SemDesc.setActualConst(acceptor, 0);
 			}
 		}
 		
@@ -133,7 +158,7 @@ public class SemNameResolver implements AbsVisitor {
 		if(decl == null)
 			error("Subprogram " + acceptor.name.name + " not declared!", acceptor);
 		else {
-			//SemDesc.setNameDecl(acceptor, decl);
+			SemDesc.setNameDecl(acceptor.name, decl);
 		}
 		
 		acceptor.args.accept(this);
@@ -147,18 +172,16 @@ public class SemNameResolver implements AbsVisitor {
 		} catch(SemIllegalInsertException e) {
 			error(acceptor.name+" already declared!", acceptor);
 		}
-		// SET NAME DECL ?? prolly not
-		//SemDesc.setNameDecl(acceptor, SemDesc.getNameDecl(acceptor.name));
 		acceptor.value.accept(this);
-		// SET ACTUAL CONST?
 		if(SemDesc.getActualConst(acceptor.value) == null)
 			error("Cannot set actual constant from value", acceptor);
-		SemDesc.setActualConst(acceptor, SemDesc.getActualConst(acceptor.value));
+		else 
+			SemDesc.setActualConst(acceptor, SemDesc.getActualConst(acceptor.value));
 	}
 
 	@Override
 	public void visit(AbsDeclName acceptor) {
-		// do nothing - WHY?
+		// do nothing
 	}
 
 	@Override
@@ -191,22 +214,31 @@ public class SemNameResolver implements AbsVisitor {
 
 	@Override
 	public void visit(AbsFunDecl acceptor) {
+		
+		// glava funkcije
+		acceptor.type.accept(this);
+		
+		// telo funkcije
+		
+		SemTable.newScope();
+		
 		try {
 			SemTable.ins(acceptor.name.name, acceptor.name);
 		} catch(SemIllegalInsertException e){
 			error("Function name "+acceptor.name.name+" already declared!", acceptor);
 		}
 		
-		acceptor.name.accept(this);
-		
-		SemTable.newScope();
-		acceptor.name.accept(this);
 		acceptor.decls.accept(this);
 		acceptor.pars.accept(this);
 		acceptor.stmt.accept(this);
 		SemTable.oldScope();
 		
-		acceptor.type.accept(this);
+		try {
+			SemTable.ins(acceptor.name.name, acceptor.name);
+		} catch(SemIllegalInsertException e){
+			error("Function name "+acceptor.name.name+" already declared!", acceptor);
+		}
+		
 		
 	}
 
@@ -225,26 +257,33 @@ public class SemNameResolver implements AbsVisitor {
 
 	@Override
 	public void visit(AbsPointerType acceptor) {
-		// TODO Auto-generated method stub
-		
+		acceptor.type.accept(this);
 	}
 
 	@Override
 	public void visit(AbsProcDecl acceptor) {
+		
+		//acceptor.name.accept(this);
+		
+		SemTable.newScope();
+		
 		try {
-			SemTable.ins(acceptor.name.name, acceptor.name);
+			SemTable.ins(acceptor.name.name, acceptor);
 		} catch(SemIllegalInsertException e){
 			error("Procedure name "+acceptor.name.name+" already declared!", acceptor);
 		}
 		
-		acceptor.name.accept(this);
-		
-		SemTable.newScope();
-		acceptor.name.accept(this); // again because we can't have declarations with the same name as the procedure name
 		acceptor.decls.accept(this);	
 		acceptor.pars.accept(this);
 		acceptor.stmt.accept(this);
 		SemTable.oldScope();
+		
+		try {
+			SemTable.ins(acceptor.name.name, acceptor);
+		} catch(SemIllegalInsertException e){
+			error("Procedure name "+acceptor.name.name+" already declared!", acceptor);
+		}
+		
 	}
 
 	@Override
@@ -255,21 +294,27 @@ public class SemNameResolver implements AbsVisitor {
 			error("Program name cannot be equal to any of the function names.", acceptor);
 		}
 		
+		SemTable.newScope();
+		
 		acceptor.name.accept(this);
 		acceptor.decls.accept(this);
 		acceptor.stmt.accept(this);
 		
+		SemTable.oldScope();
 	}
 
 	@Override
 	public void visit(AbsRecordType acceptor) {
+		
+		
 		SemTable.newScope();
 		acceptor.fields.accept(this);
 		SemTable.oldScope();
 		
+		
 		// ????
-		for (AbsDecl d : acceptor.fields.decls)
-			SemDesc.setScope(d, 0);
+		/*for (AbsDecl d : acceptor.fields.decls)
+			SemDesc.setScope(d, 0);*/
 	}
 
 	@Override
@@ -282,13 +327,32 @@ public class SemNameResolver implements AbsVisitor {
 
 	@Override
 	public void visit(AbsTypeDecl acceptor) {
-		acceptor.name.accept(this);
+		/* AbsTypeExpr:
+		 * @see AbsAtomType
+		 * @see AbsArrayType
+		 * @see AbsRecordType
+		 * @see AbsPointerType
+		 * 
+		*/
+		try {
+			SemTable.ins(acceptor.name.name, acceptor);
+		} catch(SemIllegalInsertException e) {
+			error("Type \"" + acceptor.name.name + "\" already declared!", acceptor);
+		}
+		//AbsTypeExpr
 		acceptor.type.accept(this);
+		SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.type));
 	}
 
 	@Override
 	public void visit(AbsTypeName acceptor) {
-		// TODO Auto-generated method stub
+		AbsDecl decl = SemTable.fnd(acceptor.name);
+		if(decl == null) {
+			error("Type \"" + acceptor.name + "\" has not yet been declared!", acceptor);
+		} else {
+			SemDesc.setNameDecl(acceptor, decl);
+		}
+		
 		
 	}
 
@@ -296,11 +360,27 @@ public class SemNameResolver implements AbsVisitor {
 	public void visit(AbsUnExpr acceptor) {
 		// izrazi za opis vrednosti - izrazi z unarnim operatorjem.
 		acceptor.expr.accept(this);
-		// KAJ PA PREDZNAK?
+		
+		Integer val = SemDesc.getActualConst(acceptor.expr);
+		if(val == null)	return;
+		switch(val) {
+		case AbsUnExpr.ADD:
+			SemDesc.setActualConst(acceptor, val);
+			break;
+		case AbsUnExpr.SUB:
+			SemDesc.setActualConst(acceptor, -val);
+			break;
+		}
 	}
 
 	@Override
 	public void visit(AbsValExprs acceptor) {
+		/* * @see AbsConstExpr
+		 * @see AbsUnExpr
+		 * @see AbsBinExpr
+		 * @see AbsValName
+		 * @see AbsCallExpr
+		 * @see AbsAlloc */
 		for (AbsValExpr e: acceptor.exprs)
 			e.accept(this);
 	}
@@ -308,16 +388,16 @@ public class SemNameResolver implements AbsVisitor {
 	@Override
 	public void visit(AbsValName acceptor) {
 		// izraz za opis vrednosti - ime
+		
+		// najdemo deklaracijo v simbolni tabeli
 		AbsDecl name = SemTable.fnd(acceptor.name);
+		// povezava z deklaracijo
+		SemDesc.setNameDecl(acceptor, name);
+		
 		if(name == null)
 			error(acceptor.name + " not declared!", acceptor);
 		else {
-			// WHY?
-			//error(acceptor.name, acceptor);
-			//SemDesc.setNameDecl(acceptor, name);
-			if(SemDesc.getActualConst(name) == null)
-				error("Cannot get actual const", acceptor);
-			
+			if(SemDesc.getActualConst(name) != null)
 			SemDesc.setActualConst(acceptor, SemDesc.getActualConst(name));
 		}
 		
@@ -332,7 +412,6 @@ public class SemNameResolver implements AbsVisitor {
 				error("Variable " + acceptor.name.name + " already declared!", acceptor);
 		}
 		
-		acceptor.name.accept(this);
 		acceptor.type.accept(this);
 	}
 
@@ -345,5 +424,6 @@ public class SemNameResolver implements AbsVisitor {
 	
 	private void error(String msg, AbsTree el) {
 		Report.warning(msg, el.begLine, el.begColumn, el.endLine, el.endColumn);
+		error = true;
 	}
 }

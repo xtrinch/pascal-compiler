@@ -285,7 +285,7 @@ expr_value ::= INT_CONST:i
 				:}
 			 | NIL:a 
 				{:
-					AbsAtomConst nil = new AbsAtomConst(a, 1);
+					AbsNilConst nil = new AbsNilConst();
 					nil.setPos(a.toString(), aleft, aright);
 				 	RESULT = nil;		
 					
