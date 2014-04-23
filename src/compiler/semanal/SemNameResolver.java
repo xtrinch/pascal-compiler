@@ -87,7 +87,6 @@ public class SemNameResolver implements AbsVisitor {
 				SemDesc.setActualConst(acceptor, 0);
 			break;
 		case AbsAtomConst.CHAR:
-			// 0 or 1??
 			SemDesc.setActualConst(acceptor, (int)acceptor.value.charAt(1));
 			break;
 		}
@@ -95,7 +94,6 @@ public class SemNameResolver implements AbsVisitor {
 
 	@Override
 	public void visit(AbsAtomType acceptor) {
-		// SUPPOSEDLY NOTHING TO DO HERE ???	
 	}
 
 	@Override
@@ -174,7 +172,7 @@ public class SemNameResolver implements AbsVisitor {
 		}
 		acceptor.value.accept(this);
 		if(SemDesc.getActualConst(acceptor.value) == null)
-			error("Cannot set actual constant from value", acceptor);
+			error("Cannot get actual constant from value " + ((AbsConstDecl)SemDesc.getNameDecl(acceptor.value)).name.name, acceptor);
 		else 
 			SemDesc.setActualConst(acceptor, SemDesc.getActualConst(acceptor.value));
 	}
@@ -221,20 +219,18 @@ public class SemNameResolver implements AbsVisitor {
 		// telo funkcije
 		
 		SemTable.newScope();
-		
 		try {
-			SemTable.ins(acceptor.name.name, acceptor.name);
+			SemTable.ins(acceptor.name.name, acceptor);
 		} catch(SemIllegalInsertException e){
 			error("Function name "+acceptor.name.name+" already declared!", acceptor);
-		}
-		
-		acceptor.decls.accept(this);
+		}		
 		acceptor.pars.accept(this);
+		acceptor.decls.accept(this);
 		acceptor.stmt.accept(this);
 		SemTable.oldScope();
 		
 		try {
-			SemTable.ins(acceptor.name.name, acceptor.name);
+			SemTable.ins(acceptor.name.name, acceptor);
 		} catch(SemIllegalInsertException e){
 			error("Function name "+acceptor.name.name+" already declared!", acceptor);
 		}
@@ -392,11 +388,24 @@ public class SemNameResolver implements AbsVisitor {
 		// najdemo deklaracijo v simbolni tabeli
 		AbsDecl name = SemTable.fnd(acceptor.name);
 		// povezava z deklaracijo
-		SemDesc.setNameDecl(acceptor, name);
 		
-		if(name == null)
-			error(acceptor.name + " not declared!", acceptor);
+		if(name == null){
+			error("\""+acceptor.name+"\"" + " not declared!", acceptor); 
+			try {
+			SemTable.ins(acceptor.name, new AbsConstDecl(new AbsDeclName(acceptor.name), new AbsAtomConst("0", 2)));
+			AbsDecl errorDecl = SemTable.fnd(acceptor.name);
+			SemDesc.setNameDecl(acceptor, errorDecl);
+			SemDesc.setActualConst(errorDecl, 0);
+			SemDesc.setActualConst(acceptor, 0);
+			SemDesc.setActualType(errorDecl, new SemAtomType(SemAtomType.INT));
+			Integer a = SemDesc.getActualConst(errorDecl);
+			
+			} catch(Exception e) {
+				error("Some weird error", acceptor);
+			}
+		}
 		else {
+			SemDesc.setNameDecl(acceptor, name);
 			if(SemDesc.getActualConst(name) != null)
 			SemDesc.setActualConst(acceptor, SemDesc.getActualConst(name));
 		}

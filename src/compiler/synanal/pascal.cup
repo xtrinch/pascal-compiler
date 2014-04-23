@@ -237,7 +237,7 @@ list_param ::= list_param:l decl_name:n COLON expr_type:e
 				 {:
 					AbsDecls mylist = new AbsDecls(); 
 					mylist.decls.addAll(l.decls);
-					AbsTypeDecl type = new AbsTypeDecl(n, (AbsTypeExpr)e);
+					AbsVarDecl type = new AbsVarDecl(n, (AbsTypeExpr)e);
 					type.setBeg(n.toString(), nleft, nright);
 					type.setEnd(e);
 					mylist.decls.add(type);
@@ -247,7 +247,7 @@ list_param ::= list_param:l decl_name:n COLON expr_type:e
 				 {:
 					AbsDecls mylist = new AbsDecls(); 
 					mylist.decls.addAll(l.decls);
-					AbsTypeDecl type = new AbsTypeDecl(n, (AbsTypeExpr)e);
+					AbsVarDecl type = new AbsVarDecl(n, (AbsTypeExpr)e);
 					type.setBeg(n.toString(), nleft, nright);
 					type.setEnd(e);
 					mylist.decls.add(type);

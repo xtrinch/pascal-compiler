@@ -55,10 +55,13 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 [array [0..3] of integer] :: ^(array [0..3] of integer)
 		 */
 		acceptor.type.accept(this);
-		SemType type = SemDesc.getActualType(acceptor);
+		SemType type = SemDesc.getActualType(acceptor.type);
 		if(type != null)
 			SemDesc.setActualType(acceptor, new SemPointerType(type));
-		else error("Cannot get type!", acceptor);
+		else {
+			error("Cannot find the type you are trying to allocate the memory for!", acceptor);
+			SemDesc.setActualType(acceptor, new SemPointerType(new SemAtomType(SemAtomType.VOID)));
+		}
 	}
 
 	@Override
@@ -81,15 +84,21 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 		acceptor.srcExpr.accept(this);
 		SemType src = SemDesc.getActualType(acceptor.srcExpr);
 		SemType dst = SemDesc.getActualType(acceptor.dstExpr);
-		
 		if(src != null && dst != null) {
+			if(src instanceof SemSubprogramType)
+				src = ((SemSubprogramType)dst).getResultType();
+			if(dst instanceof SemSubprogramType)
+				dst = ((SemSubprogramType)dst).getResultType();
 			if(src.coercesTo(dst)) {
 				// razen atomarnih tipov in kazalcev ne moremo prirejati med sabo
 				if(src instanceof SemAtomType || src instanceof SemPointerType) {
 					SemDesc.setActualType(acceptor, src);
-				} else error("Expected integer or pointer type!", acceptor);				
-			} else error("Types in the assignment do not match!", acceptor);
-		} else error("Cannot find types!", acceptor);
+				} else error("You can only assign items of equal atom or equal pointer types!", acceptor);				
+			} else {
+				error("You can only assign items of equal atom or equal pointer types !", acceptor);
+			}
+		} //else error("Cannot find types!", acceptor);
+
 	}
 
 	@Override
@@ -131,7 +140,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 						} else error("Wrong type of index being accessed in the array!", acceptor);
 					} else error("Wrong type of index being accessed in the array!", acceptor);
 				} else error("Not an array!", acceptor);
-			} else error("Cannot get the type of the array!", acceptor);
+			} //else error("Cannot get the type of the array!", acceptor);
 			break;
 		case AbsBinExpr.RECACCESS:
 			// type of the second can be null
@@ -160,9 +169,9 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 				if(type1.coercesTo(type2)) {
 					if(type1 instanceof SemAtomType || type1 instanceof SemPointerType) {
 						SemDesc.setActualType(acceptor, new SemAtomType(SemAtomType.BOOL));
-					} else error("You cannot compare these two types!", acceptor);
-				} else error("Type mismatch!", acceptor);
-			} else error("Cannot get types for these items.", acceptor); // NOT NEEDED
+					} else error("You can only compare items of equal atom or equal pointer types!", acceptor);
+				} else error("You can only compare items of equal atom or equal pointer types!", acceptor);
+			} //else error("Cannot get types for these items.", acceptor); // NOT NEEDED
 			break;
 		case AbsBinExpr.OR:
 		case AbsBinExpr.AND:
@@ -174,7 +183,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 						} else error("Can only OR / AND booleans!",acceptor);
 					}else error("Cannot OR / AND these types!", acceptor);
 				} else error("Type mismatch!", acceptor);
-			} else error("Cannot get types for these items.", acceptor); // NOT NEDED
+			} //else error("Cannot get types for these items.", acceptor); // NOT NEDED
 			break;
 		case AbsBinExpr.ADD:
 		case AbsBinExpr.DIV:
@@ -187,8 +196,8 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 							SemDesc.setActualType(acceptor, new SemAtomType(SemAtomType.INT));
 						} else error("Can only perform the *, +, - and / operations on integers!",acceptor);
 					}else error("Can only perform the *, +, - and / operations on integers!", acceptor);
-				} else error("Type mismatch!", acceptor);
-			} else error("Cannot get types for these items.", acceptor); // NOT NEDED
+				} else error("Can only perform the *, +, - and / operations on integers!", acceptor);
+			} //else error("Cannot get types for these items.", acceptor); // NOT NEDED
 			break;	
 		}
 		
@@ -202,17 +211,41 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 
 	@Override
 	public void visit(AbsCallExpr acceptor) {
+		//error("a", acceptor);
 		acceptor.args.accept(this);
+		AbsDecl decl = SemDesc.getNameDecl(acceptor.name);
+		SemType type = SemDesc.getActualType(decl);
+		if (type instanceof SemSubprogramType){
+			SemSubprogramType thisType = new SemSubprogramType(((SemSubprogramType) type).getResultType());
+			for (AbsValExpr args: acceptor.args.exprs){
+				SemType argType = SemDesc.getActualType(args);
+				if (argType != null){
+					thisType.addParType(argType);
+					if(!(argType instanceof SemAtomType)) {
+						SemDesc.setActualType(acceptor, ((SemSubprogramType) type).getResultType());
+						return;
+					}
+				}else{
+					error("Problem with subprogram call parameters!", acceptor);
+				}
+			}
+			if (type.coercesTo(thisType)){
+				SemSubprogramType sub = (SemSubprogramType) type;
+				SemDesc.setActualType(acceptor, sub.getResultType());
+			}else{
+				error("Subprogram call parameters do not match the declared function parameters!", acceptor);
+			}
+		} else error("Not a subprogram!", acceptor);
 	}
 
 	@Override
 	public void visit(AbsConstDecl acceptor) {
+				
 		acceptor.value.accept(this);
 		SemType type = SemDesc.getActualType(acceptor.value);
 		if(type != null) {
 			SemDesc.setActualType(acceptor, type);
-			//error("Setting type",acceptor);
-		} else error("Cannot get type of the constant \"" + acceptor.name + "\"", acceptor);
+		} //else error("Cannot get type of the constant \"" + acceptor.name + "\"", acceptor);
 	}
 
 	@Override
@@ -254,7 +287,6 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 		} else {
 			error("Statement invalid, procedure call expected.", acceptor);
 		}
-		//no
 		acceptor.expr.accept(this);
 	}
 
@@ -263,7 +295,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 		acceptor.name.accept(this);
 		SemType type0 = SemDesc.getActualType(acceptor.name);
 		if(type0 == null) {
-			error("Cannot get type for for loop variable!", acceptor);
+			
 		} else if(!(type0 instanceof SemAtomType)) {
 			error("For loop variable must be an integer!", acceptor);
 		} else if(((SemAtomType)type0).type != SemAtomType.INT) {
@@ -283,7 +315,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 					}
 				}
 			} else error("For loop bound type mismatch!", acceptor);
-		} else error("Cannot get types for bounds!", acceptor);
+		} //else error("Cannot get types for bounds!", acceptor);
 		
 		acceptor.stmt.accept(this);
 		
@@ -291,8 +323,8 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 
 	@Override
 	public void visit(AbsFunDecl acceptor) {
-		acceptor.type.accept(this);
 		acceptor.pars.accept(this);
+		acceptor.type.accept(this);
 		SemType res = SemDesc.getActualType(acceptor.type);
 		SemSubprogramType type = new SemSubprogramType(res);
 		for(AbsDecl d : acceptor.pars.decls) {
@@ -381,9 +413,9 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 	public void visit(AbsTypeDecl acceptor) {
 		// AbsTypeExpr
 		/*
- * @see AbsAtomType (CHECK linkage works)
+ * @see AbsAtomType 
  * @see AbsArrayType
- * @see AbsRecortType (CHECK linkage works)
+ * @see AbsRecortType 
  * @see AbsPointerType
 		 */
 		acceptor.type.accept(this);
@@ -401,10 +433,9 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 		// dobimo povezavo na deklaracijo imena tega tipa
 		AbsDecl decl = SemDesc.getNameDecl(acceptor);
 		// dobimo tip iz tabele tipov
+		if(decl == null) return;
 		SemType type = SemDesc.getActualType(decl);
-		if(decl == null || type == null) {
-		error("Couldnt get type declaration for \"" + acceptor.name + "\"!", acceptor);
-		}
+		if(type == null) return;
 		SemDesc.setActualType(acceptor, type);
 		
 	}
@@ -413,10 +444,19 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 	public void visit(AbsUnExpr acceptor) {
 		acceptor.expr.accept(this);
 		SemType type = SemDesc.getActualType(acceptor.expr);
-		if(type == null)
-			error("Cannot get type!", acceptor);
+		if(type == null){
+			return;
+		}
 		
 		switch(acceptor.oper) {
+		case AbsUnExpr.ADD:
+		case AbsUnExpr.SUB:
+			if (type instanceof SemAtomType) {
+				if (((SemAtomType) type).type == SemAtomType.INT) {
+					SemDesc.setActualType(acceptor, type);
+				} else error("Wrong type for unary +, -, must be an integer!",acceptor);
+			} else error("Wrong type for unary +, -, must be an integer!", acceptor);
+			break;
 		case AbsUnExpr.NOT:
 			if(type instanceof SemAtomType) {
 				if(((SemAtomType)type).type == AbsAtomType.BOOL) {
@@ -425,12 +465,12 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 			} else error("Wrong type!", acceptor);
 			break;
 		case AbsUnExpr.MEM:
-			// prefiksni - ttest it
+			// prefiksni 
 			SemPointerType ptype = new SemPointerType(type);
 			SemDesc.setActualType(acceptor, ptype);
 			break;
 		case AbsUnExpr.VAL:
-			// postfiksni - test it
+			// postfiksni - 
 			if(type instanceof SemPointerType) {
 				SemDesc.setActualType(acceptor, ((SemPointerType)type).type);
 			} else error("Cannot resolve a non-pointer!", acceptor);
@@ -454,12 +494,16 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 
 	@Override
 	public void visit(AbsValName acceptor) {
-		// in this node the SemNameResolver should have created a name declaration (puscica) CHECK
 		AbsDecl decl = SemDesc.getNameDecl(acceptor);
-		if(SemDesc.getActualType(decl) != null)
-			// ????????????????????????
-			//error(acceptor.name + " I can get the declaration but not the type of the declaration", acceptor);
+		// in this node the SemNameResolver should have created a name declaration
+		SemType type = SemDesc.getActualType(decl);
+		if (decl instanceof AbsFunDecl){
+
+			type = SemDesc.getActualType(((AbsFunDecl)decl).type);
+		}
+		if (type != null) {
 			SemDesc.setActualType(acceptor, SemDesc.getActualType(decl));
+		}
 		
 	}
 
@@ -474,19 +518,22 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 		acceptor.type.accept(this);
 		acceptor.name.accept(this);
 		// nastavimo spremenljivkam tip!
-		if(SemDesc.getActualType(acceptor.type) == null) 
-			error("This variable has an unknown type", acceptor);
-		SemDesc.setActualType(acceptor.name, SemDesc.getActualType(acceptor.type));
-		SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.type));
-		//error("Setting type for "+acceptor.name.name + SemDesc.getActualType(acceptor.type).toString(), acceptor);
+		SemType type = SemDesc.getActualType(acceptor.type);
+		if(type == null) {
+			return;
+		}
+		SemDesc.setActualType(acceptor.name, type);
+		SemDesc.setActualType(acceptor, type);
+
 	}
 
 	@Override
 	public void visit(AbsWhileStmt acceptor) {
-		// JUST SO YOU KNOW IT NEVER GETS HERE
+
 		acceptor.cond.accept(this);
 		if((SemDesc.getActualType(acceptor.cond)) == null) {
-			error("Cannot get type for while statement condition!", acceptor);
+			//error("Cannot get type for while statement condition!", acceptor);
+			return;
 		}
 		
 		SemType type = SemDesc.getActualType(acceptor.cond);
