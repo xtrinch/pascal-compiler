@@ -41,7 +41,7 @@ non terminal	AbsValExpr		expr_value;
 non terminal	AbsTypeExpr		expr_type;
 non terminal	AbsValExprs		expr_value_list;
 non terminal	AbsDecls		expr_type_desc;
-non terminal 	AbsTypeDecl		desc_komponente;
+non terminal 	AbsVarDecl		desc_komponente;
 
 precedence left OR;
 precedence left AND;
@@ -547,7 +547,7 @@ expr_type_desc ::= desc_komponente:d
 				 		
 desc_komponente ::= decl_name:n COLON expr_type:e 
 						{:
-							AbsTypeDecl ty = new AbsTypeDecl(n, e);
+							AbsVarDecl ty = new AbsVarDecl(n, e);
 							ty.setBeg(n.toString(), nleft, nright);
 							ty.setEnd(e);
 							RESULT = ty;

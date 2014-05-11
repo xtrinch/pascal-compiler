@@ -309,8 +309,8 @@ public class SemNameResolver implements AbsVisitor {
 		
 		
 		// ????
-		/*for (AbsDecl d : acceptor.fields.decls)
-			SemDesc.setScope(d, 0);*/
+		for (AbsDecl d : acceptor.fields.decls)
+			SemDesc.setScope(d, -1);
 	}
 
 	@Override

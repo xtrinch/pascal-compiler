@@ -366,10 +366,21 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 
 	@Override
 	public void visit(AbsProcDecl acceptor) {
+		acceptor.pars.accept(this);
+		
 		SemSubprogramType type = new SemSubprogramType(new SemAtomType(SemAtomType.VOID));
 		SemDesc.setActualType(acceptor, type);
 		
-		acceptor.pars.accept(this);
+		
+		for (AbsDecl decl: acceptor.pars.decls){
+			SemType paramType = SemDesc.getActualType(decl);
+			if (paramType != null){
+				type.addParType(paramType);
+			}else{
+				error("Cannot get parameter type!", acceptor);
+			}
+		}
+		
 		acceptor.decls.accept(this);
 		acceptor.stmt.accept(this);
 	}
@@ -386,8 +397,8 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 		SemRecordType type = new SemRecordType();
 		
 		for(AbsDecl d: acceptor.fields.decls) {
-			if(d instanceof AbsTypeDecl) {
-				type.addField(((AbsTypeDecl) d).name, SemDesc.getActualType(d));
+			if(d instanceof AbsVarDecl) {
+				type.addField(((AbsVarDecl) d).name, SemDesc.getActualType(d));
 			}
 		}
 		SemDesc.setActualType(acceptor, type);

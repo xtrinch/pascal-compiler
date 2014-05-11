@@ -6,7 +6,7 @@
 </absnode>
 <absnode pos="(2:1-5:7)" kind="Decls">
 <absnode pos="(3:3-3:10)" kind="ConstDecl">
-<seminfo kind="DECL" value="375908650"/>
+<seminfo kind="DECL" value="1962082203"/>
 <seminfo kind="SCOPE" value="1"/>
 <seminfo kind="VALUE" value="49"/>
 <semtype kind="CHAR"/>
@@ -18,7 +18,7 @@
 </absnode>
 </absnode>
 <absnode pos="(5:3-5:7)" kind="VarDecl">
-<seminfo kind="DECL" value="1286664778"/>
+<seminfo kind="DECL" value="367124334"/>
 <seminfo kind="SCOPE" value="1"/>
 <absnode pos="(5:3-5:3)" kind="DeclName" value="b">
 </absnode>
@@ -30,28 +30,28 @@
 <absnode pos="(8:3-10:8)" kind="Stmts">
 <absnode pos="(8:3-8:8)" kind="AssignStmt">
 <absnode pos="(8:3-8:3)" kind="ValName" value="b">
-<seminfo kind="DECL" value="1286664778"/>
+<seminfo kind="DECL" value="367124334"/>
 </absnode>
 <absnode pos="(8:8-8:8)" kind="ValName" value="a">
-<seminfo kind="DECL" value="375908650"/>
+<seminfo kind="DECL" value="1962082203"/>
 <semtype kind="CHAR"/>
 </absnode>
 </absnode>
 <absnode pos="(9:3-9:8)" kind="AssignStmt">
 <absnode pos="(9:3-9:3)" kind="ValName" value="b">
-<seminfo kind="DECL" value="1286664778"/>
+<seminfo kind="DECL" value="367124334"/>
 </absnode>
 <absnode pos="(9:8-9:8)" kind="ValName" value="a">
-<seminfo kind="DECL" value="375908650"/>
+<seminfo kind="DECL" value="1962082203"/>
 <semtype kind="CHAR"/>
 </absnode>
 </absnode>
 <absnode pos="(10:3-10:8)" kind="AssignStmt">
 <absnode pos="(10:3-10:3)" kind="ValName" value="b">
-<seminfo kind="DECL" value="1286664778"/>
+<seminfo kind="DECL" value="367124334"/>
 </absnode>
 <absnode pos="(10:8-10:8)" kind="ValName" value="c">
-<seminfo kind="DECL" value="1688096192"/>
+<seminfo kind="DECL" value="344182309"/>
 <semtype kind="INT"/>
 </absnode>
 </absnode>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type='text/xsl' href='xsl/imcode.xsl'?>
+<imcode>
+<datachunk label="_b" size="4"/>
+<datachunk label="_x" size="4"/>
+<datachunk label="_c" size="4"/>
+<datachunk label="_i" size="4"/>
+<datachunk label="_alloc" size="4"/>
+<datachunk label="_f2" size="24"/>
+<codechunk value="_FuckThisShit">
+<frmnode>
+<frm kind="level" value="1"/>
+<frm kind="label" value="_FuckThisShit"/>
+<frm kind="size" value="8"/>
+<frm kind="FP" value="T1"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_alloc"/>
+</imcnode>
+<imcnode kind="CALL" value="_malloc">
+<imcnode kind="CONST" value="0"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="SEQ">
+<imcnode kind="LABEL" value="L2"/>
+<imcnode kind="CJUMP" value="L0,L1">
+<imcnode kind="BINOP" value="&#60;">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="3"/>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L0"/>
+<imcnode kind="SEQ">
+</imcnode>
+<imcnode kind="JUMP" value="L2"/>
+<imcnode kind="LABEL" value="L1"/>
+</imcnode>
+</imcnode>
+</codechunk>
+<codechunk value="_main">
+<frmnode>
+<frm kind="level" value="0"/>
+<frm kind="label" value="_main"/>
+<frm kind="size" value="12"/>
+<frm kind="FP" value="T0"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_c"/>
+</imcnode>
+<imcnode kind="CONST" value="3"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_b"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_c"/>
+</imcnode>
+</imcnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+<imcnode kind="LABEL" value="L5"/>
+<imcnode kind="CJUMP" value="L3,L4">
+<imcnode kind="BINOP" value="&#60;=">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="5"/>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L3"/>
+<imcnode kind="SEQ">
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="BINOP" value="+">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+<imcnode kind="JUMP" value="L5"/>
+<imcnode kind="LABEL" value="L4"/>
+</imcnode>
+<imcnode kind="SEQ">
+<imcnode kind="CJUMP" value="L6,L7">
+<imcnode kind="BINOP" value="==">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="3"/>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L6"/>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_b"/>
+</imcnode>
+<imcnode kind="BINOP" value="-">
+<imcnode kind="CONST" value="0"/>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_c"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="JUMP" value="L8"/>
+<imcnode kind="LABEL" value="L7"/>
+<imcnode kind="SEQ">
+</imcnode>
+<imcnode kind="LABEL" value="L8"/>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_FuckThisShit">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T1"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+</codechunk>
+</imcode>
