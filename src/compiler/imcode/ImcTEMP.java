@@ -15,6 +15,7 @@ public class ImcTEMP extends ImcExpr {
 
 	@Override
 	public void toXML(PrintStream xml) {
+		if(temp == null)	System.out.println("temp is null");
 		xml.print("<imcnode kind=\"TEMP\" value=\"" + temp.name() + "\"/>\n");
 	}
 

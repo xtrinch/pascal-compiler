@@ -18,6 +18,28 @@ public class FrmEvaluator implements AbsVisitor {
 		FrmArgAccess za argumente funkcij, FrmCmpAccess za komponente struktur).
 	 */
 	
+	public void addFunFrame(String name) {
+		AbsDecl decl = SemTable.fnd(name);
+		AbsFunDecl a = null;
+		AbsProcDecl b = null;
+		if(decl instanceof AbsFunDecl) {
+			a = (AbsFunDecl)decl;
+			FrmDesc.setFrame(a, new FrmFrame(a, 1));
+		} else if(decl instanceof AbsProcDecl) {
+			b = (AbsProcDecl)decl;
+			FrmDesc.setFrame(b, new FrmFrame(b, 1));
+		}
+	}
+	
+	public FrmEvaluator() {
+		addFunFrame("putint");
+		addFunFrame("putch");
+		addFunFrame("getch");
+		addFunFrame("getint");
+		addFunFrame("ord");
+		addFunFrame("chr");
+		addFunFrame("free");
+	}
 	
 	public void visit(AbsProgram acceptor) {
 		FrmFrame frame = new FrmFrame(acceptor,0);
@@ -101,6 +123,7 @@ public class FrmEvaluator implements AbsVisitor {
 		acceptor.stmt.accept(this);
 		frame.sizeArgs = sArg;
 		FrmDesc.setFrame(acceptor, frame);
+		
 	}
 
 	public void visit(AbsRecordType acceptor) {
@@ -208,5 +231,11 @@ public class FrmEvaluator implements AbsVisitor {
 	}
 
 	public void visit(AbsTypeName acceptor) {
+	}
+
+	@Override
+	public void visit(QMarkStmt qMarkStmt) {
+		// TODO Auto-generated method stub
+		
 	}
 }

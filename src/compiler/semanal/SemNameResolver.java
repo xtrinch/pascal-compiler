@@ -34,6 +34,8 @@ import compiler.abstree.tree.AbsValExprs;
 import compiler.abstree.tree.AbsValName;
 import compiler.abstree.tree.AbsVarDecl;
 import compiler.abstree.tree.AbsWhileStmt;
+import compiler.abstree.tree.QMarkStmt;
+import compiler.abstree.tree.VisibilityType;
 import compiler.report.Report;
 import compiler.semanal.type.SemAtomType;
 import compiler.semanal.type.SemSubprogramType;
@@ -41,7 +43,35 @@ import compiler.semanal.type.SemSubprogramType;
 public class SemNameResolver implements AbsVisitor {
 	
 	public boolean error;
-
+	public boolean isGlobal = false;
+	
+	public void insertFunction(String name) {
+	    try {
+			SemTable.ins(name, new AbsFunDecl(new AbsDeclName(name), null, null, null, null));
+		} catch (SemIllegalInsertException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void insertProcedure(String name) {
+	    try {
+			SemTable.ins(name, new AbsProcDecl(new AbsDeclName(name), null, null, null));
+		} catch (SemIllegalInsertException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//@Override
+	public SemNameResolver() {
+		insertProcedure("putint");
+		insertProcedure("putch");
+		insertFunction("getch");
+		insertFunction("getint");
+		insertFunction("ord");
+		insertFunction("chr");
+		insertProcedure("free");
+	}
+	
 	@Override
 	public void visit(AbsAlloc acceptor) {
 		acceptor.type.accept(this);
@@ -184,6 +214,18 @@ public class SemNameResolver implements AbsVisitor {
 
 	@Override
 	public void visit(AbsDecls acceptor) {
+		
+		/**
+		 * Deklaracije.
+		 * 
+		 * @see AbsConstDecl
+		 * @see AbsDeclName
+		 * @see AbsFunDecl
+		 * @see AbsProcDecl
+		 * @see AbsTypeDecl
+		 * @see AbsVarDecl
+		 */
+		
 		for(AbsDecl decl:acceptor.decls) {
 			decl.accept(this);
 		}
@@ -261,24 +303,24 @@ public class SemNameResolver implements AbsVisitor {
 		
 		//acceptor.name.accept(this);
 		
+		try {
+			SemTable.ins(acceptor.name.name, acceptor);
+		} catch(SemIllegalInsertException e){
+			error("Procedure name "+acceptor.name.name+" already declared!", acceptor);
+		}
+		
 		SemTable.newScope();
 		
-		try {
+		/*try {
 			SemTable.ins(acceptor.name.name, acceptor);
 		} catch(SemIllegalInsertException e){
 			error("Procedure name "+acceptor.name.name+" already declared!", acceptor);
-		}
+		}*/
 		
-		acceptor.decls.accept(this);	
 		acceptor.pars.accept(this);
+		acceptor.decls.accept(this);	
 		acceptor.stmt.accept(this);
 		SemTable.oldScope();
-		
-		try {
-			SemTable.ins(acceptor.name.name, acceptor);
-		} catch(SemIllegalInsertException e){
-			error("Procedure name "+acceptor.name.name+" already declared!", acceptor);
-		}
 		
 	}
 
@@ -290,13 +332,23 @@ public class SemNameResolver implements AbsVisitor {
 			error("Program name cannot be equal to any of the function names.", acceptor);
 		}
 		
-		SemTable.newScope();
-		
+		//SemTable.newScope();
+		isGlobal = true;
 		acceptor.name.accept(this);
-		acceptor.decls.accept(this);
-		acceptor.stmt.accept(this);
 		
-		SemTable.oldScope();
+		for(AbsDecl d: acceptor.decls.decls) {
+			if(d instanceof AbsVarDecl) {
+				if(((AbsVarDecl)d).visType.type == VisibilityType.PRIVATE) {
+					error("Variable " + ((AbsVarDecl)d).name.name + " is global, you cannot declare it as private!", acceptor);
+				}
+			} 
+			d.accept(this);
+		}
+		
+		
+		acceptor.stmt.accept(this);
+		isGlobal = false;
+		//SemTable.oldScope();
 	}
 
 	@Override
@@ -415,8 +467,11 @@ public class SemNameResolver implements AbsVisitor {
 	@Override
 	public void visit(AbsVarDecl acceptor) {
 		// insert variable name into semtable
+
+		
 		try {
 				SemTable.ins(acceptor.name.name, acceptor);
+				
 		} catch (SemIllegalInsertException e) {
 				error("Variable " + acceptor.name.name + " already declared!", acceptor);
 		}
@@ -434,5 +489,12 @@ public class SemNameResolver implements AbsVisitor {
 	private void error(String msg, AbsTree el) {
 		Report.warning(msg, el.begLine, el.begColumn, el.endLine, el.endColumn);
 		error = true;
+	}
+
+	@Override
+	public void visit(QMarkStmt acceptor) {
+		acceptor.cond.accept(this);
+		acceptor.stmt2.accept(this);
+		acceptor.stmt1.accept(this);
 	}
 }

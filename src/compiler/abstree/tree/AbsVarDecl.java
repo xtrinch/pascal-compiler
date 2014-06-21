@@ -13,9 +13,13 @@ public class AbsVarDecl extends AbsDecl {
 	/** Tip spremenljivke. */
 	public AbsTypeExpr type;
 	
-	public AbsVarDecl(AbsDeclName name, AbsTypeExpr type) {
+	/** Tip vidnosti. */
+	public VisibilityType visType;
+	
+	public AbsVarDecl(AbsDeclName name, AbsTypeExpr type, VisibilityType visType) {
 		this.name = name;
 		this.type = type;
+		this.visType = visType;
 	}
 
 	public void accept(AbsVisitor visitor) {

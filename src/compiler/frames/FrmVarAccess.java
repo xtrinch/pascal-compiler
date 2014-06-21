@@ -7,6 +7,10 @@ import compiler.abstree.tree.*;
 /** Dostop do globalne spremenljivke.  */
 public class FrmVarAccess extends FrmAccess {
 
+	///// HAS VALUE
+	public int hasValue = 0;
+	
+	
 	/** Opis spremenljivke.  */
 	public AbsVarDecl var;
 

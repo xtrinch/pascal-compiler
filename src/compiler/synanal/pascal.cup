@@ -26,6 +26,7 @@ terminal BOOL, CHAR, INT;
 terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
 terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
+terminal PRIVATE, SINGLE, QMARK;
 
 non terminal	AbsProgram		program;
 non terminal	AbsDeclName		decl_name;
@@ -42,7 +43,9 @@ non terminal	AbsTypeExpr		expr_type;
 non terminal	AbsValExprs		expr_value_list;
 non terminal	AbsDecls		expr_type_desc;
 non terminal 	AbsVarDecl		desc_komponente;
+non terminal	VisibilityType	kywrd_private;
 
+precedence nonassoc QMARK;
 precedence left OR;
 precedence left AND;
 precedence nonassoc EQU, NEQ, LTH, GTH, LEQ, GEQ;
@@ -150,11 +153,11 @@ declarations_var ::= VAR:beg decl_var:decs
 								decs.setBeg("", -1, -1);
 								RESULT = decs;
 							:};
-decl_var ::= decl_var:left decl_name:n COLON expr_type:e SEMIC:end
+decl_var ::= decl_var:left decl_name:n COLON kywrd_private:vis  expr_type:e SEMIC:end
 				{:
 					AbsDecls listy = new AbsDecls(); 
 					listy.decls.addAll(left.decls);
-					AbsVarDecl var = new AbsVarDecl(n, (AbsTypeExpr)e); 
+					AbsVarDecl var = new AbsVarDecl(n, (AbsTypeExpr)e, vis); 
 					var.setBeg(n.toString(), nleft, nright);
 					var.setEnd(end.toString(), endleft, endright);
 					listy.decls.add(var);
@@ -165,6 +168,17 @@ decl_var ::= decl_var:left decl_name:n COLON expr_type:e SEMIC:end
 				:}
 			| {: RESULT = new AbsDecls(); :};
 		
+kywrd_private ::= PRIVATE 
+					{:
+						RESULT = new VisibilityType(VisibilityType.PRIVATE);
+					:} 
+				| SINGLE
+					{:
+						RESULT = new VisibilityType(VisibilityType.SINGLE);
+					:}
+				| {:	RESULT = new VisibilityType(VisibilityType.PUBLIC);	:};
+
+
 declarations_type ::= TYPE:beg decl_type:decs
 							{:	
 								decs.setBeg(beg.toString(), begleft, begright);
@@ -233,11 +247,12 @@ desc_param ::= LPARENTHESIS:beg list_param:list RPARENTHESIS:end
 					list.setEnd(end.toString(), endleft, endright);
 					RESULT = list;
 				:};
+				
 list_param ::= list_param:l decl_name:n COLON expr_type:e
 				 {:
 					AbsDecls mylist = new AbsDecls(); 
 					mylist.decls.addAll(l.decls);
-					AbsVarDecl type = new AbsVarDecl(n, (AbsTypeExpr)e);
+					AbsVarDecl type = new AbsVarDecl(n, (AbsTypeExpr)e, new VisibilityType(VisibilityType.PUBLIC));
 					type.setBeg(n.toString(), nleft, nright);
 					type.setEnd(e);
 					mylist.decls.add(type);
@@ -247,7 +262,7 @@ list_param ::= list_param:l decl_name:n COLON expr_type:e
 				 {:
 					AbsDecls mylist = new AbsDecls(); 
 					mylist.decls.addAll(l.decls);
-					AbsVarDecl type = new AbsVarDecl(n, (AbsTypeExpr)e);
+					AbsVarDecl type = new AbsVarDecl(n, (AbsTypeExpr)e,  new VisibilityType(VisibilityType.PUBLIC));
 					type.setBeg(n.toString(), nleft, nright);
 					type.setEnd(e);
 					mylist.decls.add(type);
@@ -547,7 +562,7 @@ expr_type_desc ::= desc_komponente:d
 				 		
 desc_komponente ::= decl_name:n COLON expr_type:e 
 						{:
-							AbsVarDecl ty = new AbsVarDecl(n, e);
+							AbsVarDecl ty = new AbsVarDecl(n, e,  new VisibilityType(VisibilityType.PUBLIC));
 							ty.setBeg(n.toString(), nleft, nright);
 							ty.setEnd(e);
 							RESULT = ty;
@@ -555,6 +570,13 @@ desc_komponente ::= decl_name:n COLON expr_type:e
 
 
 // STAVKI
+
+// question mark if statement
+stmt ::= expr_value:e QMARK stmt:s1 COLON stmt:s2 
+			{:
+				RESULT = new QMarkStmt(e, s1, s2);
+			:};
+
 stmt ::= expr_value:e 
 			{:
 				AbsExprStmt es = new AbsExprStmt((AbsValExpr) e);

@@ -6,15 +6,137 @@
 <datachunk label="_c" size="4"/>
 <datachunk label="_i" size="4"/>
 <datachunk label="_alloc" size="4"/>
+<datachunk label="_booly" size="4"/>
+<datachunk label="_boolTest" size="4"/>
 <datachunk label="_f2" size="24"/>
+<datachunk label="_rec" size="24"/>
+<codechunk value="_TestBooleanConversion">
+<frmnode>
+<frm kind="level" value="1"/>
+<frm kind="label" value="_TestBooleanConversion"/>
+<frm kind="size" value="16"/>
+<frm kind="FP" value="T12"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_booly"/>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T12"/>
+</imcnode>
+<imcnode kind="CONST" value="98"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T12"/>
+</imcnode>
+<imcnode kind="CONST" value="58"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T12"/>
+</imcnode>
+<imcnode kind="CONST" value="32"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T12"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_boolTest"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+</codechunk>
+<codechunk value="L0">
+<frmnode>
+<frm kind="level" value="2"/>
+<frm kind="label" value="L0"/>
+<frm kind="size" value="8"/>
+<frm kind="FP" value="T14"/>
+<frm kind="RV" value="T15"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T15"/>
+<imcnode kind="CONST" value="7"/>
+</imcnode>
+</imcnode>
+</codechunk>
+<codechunk value="L1">
+<frmnode>
+<frm kind="level" value="2"/>
+<frm kind="label" value="L1"/>
+<frm kind="size" value="8"/>
+<frm kind="FP" value="T16"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="NAME" value="_rec"/>
+<imcnode kind="CONST" value="16"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="9"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T16"/>
+</imcnode>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="BINOP" value="-">
+<imcnode kind="CONST" value="0"/>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</codechunk>
 <codechunk value="_FuckThisShit">
 <frmnode>
 <frm kind="level" value="1"/>
 <frm kind="label" value="_FuckThisShit"/>
-<frm kind="size" value="8"/>
-<frm kind="FP" value="T1"/>
+<frm kind="size" value="28"/>
+<frm kind="FP" value="T13"/>
 </frmnode>
 <imcnode kind="SEQ">
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+<imcnode kind="CONST" value="98"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
 <imcnode kind="MOVE">
 <imcnode kind="MEM">
 <imcnode kind="NAME" value="_alloc"/>
@@ -24,21 +146,281 @@
 <imcnode kind="CONST" value="4"/>
 </imcnode>
 </imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="-8"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="0"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_c"/>
+</imcnode>
+<imcnode kind="CALL" value="L0">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+</imcnode>
 <imcnode kind="SEQ">
-<imcnode kind="LABEL" value="L2"/>
-<imcnode kind="CJUMP" value="L0,L1">
+<imcnode kind="LABEL" value="L4"/>
+<imcnode kind="CJUMP" value="L2,L3">
 <imcnode kind="BINOP" value="&#60;">
 <imcnode kind="MEM">
-<imcnode kind="NAME" value="_i"/>
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
 </imcnode>
 <imcnode kind="CONST" value="3"/>
 </imcnode>
 </imcnode>
-<imcnode kind="LABEL" value="L0"/>
+<imcnode kind="LABEL" value="L2"/>
 <imcnode kind="SEQ">
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
 </imcnode>
-<imcnode kind="JUMP" value="L2"/>
-<imcnode kind="LABEL" value="L1"/>
+<imcnode kind="CONST" value="97"/>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="BINOP" value="+">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="JUMP" value="L4"/>
+<imcnode kind="LABEL" value="L3"/>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="L1">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="NAME" value="_rec"/>
+<imcnode kind="CONST" value="16"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+<imcnode kind="CALL" value="L0">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T13"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="-12"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="3"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="CONST" value="-12"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+</codechunk>
+<codechunk value="_factorialExit">
+<frmnode>
+<frm kind="level" value="1"/>
+<frm kind="label" value="_factorialExit"/>
+<frm kind="size" value="16"/>
+<frm kind="FP" value="T17"/>
+<frm kind="RV" value="T18"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="SEQ">
+<imcnode kind="CJUMP" value="L5,L6">
+<imcnode kind="BINOP" value="==">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T17"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L5"/>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T18"/>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+<imcnode kind="JUMP" value="L7"/>
+<imcnode kind="LABEL" value="L6"/>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T18"/>
+<imcnode kind="BINOP" value="*">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T17"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CALL" value="_factorialExit">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T17"/>
+</imcnode>
+<imcnode kind="BINOP" value="-">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T17"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L7"/>
+</imcnode>
+</imcnode>
+</codechunk>
+<codechunk value="_factorial">
+<frmnode>
+<frm kind="level" value="1"/>
+<frm kind="label" value="_factorial"/>
+<frm kind="size" value="12"/>
+<frm kind="FP" value="T19"/>
+<frm kind="RV" value="T20"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+<imcnode kind="LABEL" value="L10"/>
+<imcnode kind="CJUMP" value="L8,L9">
+<imcnode kind="BINOP" value="&#60;=">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L8"/>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="BINOP" value="*">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="BINOP" value="+">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+<imcnode kind="JUMP" value="L10"/>
+<imcnode kind="LABEL" value="L9"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T20"/>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="CONST" value="-4"/>
+</imcnode>
+</imcnode>
 </imcnode>
 </imcnode>
 </codechunk>
@@ -46,15 +428,23 @@
 <frmnode>
 <frm kind="level" value="0"/>
 <frm kind="label" value="_main"/>
-<frm kind="size" value="12"/>
-<frm kind="FP" value="T0"/>
+<frm kind="size" value="16"/>
+<frm kind="FP" value="T11"/>
 </frmnode>
 <imcnode kind="SEQ">
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="3"/>
+</imcnode>
+</imcnode>
 <imcnode kind="MOVE">
 <imcnode kind="MEM">
 <imcnode kind="NAME" value="_c"/>
 </imcnode>
-<imcnode kind="CONST" value="3"/>
+<imcnode kind="CONST" value="2"/>
 </imcnode>
 <imcnode kind="MOVE">
 <imcnode kind="MEM">
@@ -71,8 +461,8 @@
 </imcnode>
 <imcnode kind="CONST" value="1"/>
 </imcnode>
-<imcnode kind="LABEL" value="L5"/>
-<imcnode kind="CJUMP" value="L3,L4">
+<imcnode kind="LABEL" value="L13"/>
+<imcnode kind="CJUMP" value="L11,L12">
 <imcnode kind="BINOP" value="&#60;=">
 <imcnode kind="MEM">
 <imcnode kind="NAME" value="_i"/>
@@ -80,7 +470,7 @@
 <imcnode kind="CONST" value="5"/>
 </imcnode>
 </imcnode>
-<imcnode kind="LABEL" value="L3"/>
+<imcnode kind="LABEL" value="L11"/>
 <imcnode kind="SEQ">
 </imcnode>
 <imcnode kind="MOVE">
@@ -94,19 +484,19 @@
 <imcnode kind="CONST" value="1"/>
 </imcnode>
 </imcnode>
-<imcnode kind="JUMP" value="L5"/>
-<imcnode kind="LABEL" value="L4"/>
+<imcnode kind="JUMP" value="L13"/>
+<imcnode kind="LABEL" value="L12"/>
 </imcnode>
 <imcnode kind="SEQ">
-<imcnode kind="CJUMP" value="L6,L7">
-<imcnode kind="BINOP" value="==">
+<imcnode kind="CJUMP" value="L14,L15">
+<imcnode kind="BINOP" value="&#60;=">
 <imcnode kind="MEM">
 <imcnode kind="NAME" value="_i"/>
 </imcnode>
 <imcnode kind="CONST" value="3"/>
 </imcnode>
 </imcnode>
-<imcnode kind="LABEL" value="L6"/>
+<imcnode kind="LABEL" value="L14"/>
 <imcnode kind="SEQ">
 <imcnode kind="MOVE">
 <imcnode kind="MEM">
@@ -119,17 +509,176 @@
 </imcnode>
 </imcnode>
 </imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="BINOP" value="*">
+<imcnode kind="BINOP" value="-">
+<imcnode kind="CONST" value="4"/>
+<imcnode kind="CONST" value="0"/>
 </imcnode>
-<imcnode kind="JUMP" value="L8"/>
-<imcnode kind="LABEL" value="L7"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+<imcnode kind="NAME" value="_f2"/>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="53"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="NAME" value="_rec"/>
+<imcnode kind="CONST" value="20"/>
+</imcnode>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_x"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="JUMP" value="L16"/>
+<imcnode kind="LABEL" value="L15"/>
 <imcnode kind="SEQ">
 </imcnode>
-<imcnode kind="LABEL" value="L8"/>
+<imcnode kind="LABEL" value="L16"/>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_c"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="116"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="NAME" value="_rec"/>
+<imcnode kind="CONST" value="20"/>
+</imcnode>
+</imcnode>
+</imcnode>
 </imcnode>
 <imcnode kind="EXP">
 <imcnode kind="CALL" value="_FuckThisShit">
 <imcnode kind="MEM">
-<imcnode kind="TEMP" value="T1"/>
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_c"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CALL" value="_factorial">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="5"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="32"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CALL" value="_factorialExit">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="5"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="32"/>
+</imcnode>
+</imcnode>
+<imcnode kind="SEQ">
+<imcnode kind="CJUMP" value="L17,L18">
+<imcnode kind="BINOP" value="&#60;">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="6"/>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L17"/>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="3"/>
+</imcnode>
+<imcnode kind="JUMP" value="L19"/>
+<imcnode kind="LABEL" value="L18"/>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+<imcnode kind="LABEL" value="L19"/>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
+</imcnode>
+<imcnode kind="CONST" value="97"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="CALL" value="_TestBooleanConversion">
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T19"/>
 </imcnode>
 </imcnode>
 </imcnode>

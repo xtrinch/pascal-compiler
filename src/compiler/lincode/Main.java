@@ -1,4 +1,4 @@
-package compiler.imcode;
+package compiler.lincode;
 
 import java.io.*;
 import java.util.*;
@@ -9,12 +9,12 @@ import compiler.synanal.*;
 import compiler.abstree.tree.*;
 import compiler.semanal.*;
 import compiler.frames.*;
+import compiler.imcode.*;
 
 public class Main {
 	
 	/** Zaporedje delov kode.  */
 	public static LinkedList<ImcChunk> chunks;
-
 
 	/**
 	 * Izvede prevajanje do faze semanticne analize.
@@ -36,7 +36,6 @@ public class Main {
 			program = (AbsProgram) (parser.parse().value);
 		} catch (Exception ex) {
 			Report.error("Uncaught syntax error.", 1);
-			System.out.println(ex.toString());
 		}
 		SemNameResolver nameResolver = new SemNameResolver();
 		SemTypeChecker typeChecker = new SemTypeChecker();
@@ -57,15 +56,21 @@ public class Main {
 		program.accept(new FrmEvaluator());
 
 		/* Izracunamo kose programa. */
+		PrintStream xml = XML.open("lincode");
 		IMCodeGenerator code = new IMCodeGenerator();
 		program.accept(code);
 		chunks = code.chunks;
-		
-		PrintStream xml = XML.open("imcode");
+		for (ImcChunk chunk : chunks) {
+			if (chunk instanceof ImcCodeChunk) {
+				ImcCodeChunk codeChunk = (ImcCodeChunk) chunk;
+				codeChunk.lincode = codeChunk.imcode.linear();
+			}
+		}
 		for (ImcChunk chunk : chunks) {
 			chunk.toXML(xml);
 		}
-		XML.close("imcode", xml);
+		XML.close("lincode", xml);
 		
+		new Interpreter(chunks);
 	}
 }

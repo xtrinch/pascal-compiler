@@ -41,11 +41,41 @@ import compiler.abstree.tree.AbsValExprs;
 import compiler.abstree.tree.AbsValName;
 import compiler.abstree.tree.AbsVarDecl;
 import compiler.abstree.tree.AbsWhileStmt;
+import compiler.abstree.tree.QMarkStmt;
 
 public class SemTypeChecker implements AbsVisitor {
 
 	public boolean error;
+	
+	public void addTypeToFunction(String name, SemType par, SemType ret) {
+		// in semTable we have stored the declarations, now we fetch it
+		AbsTree imaginaryDeclarationNode = SemTable.fnd(name);
+		SemSubprogramType type = new SemSubprogramType(ret);
+		if(par != null)	type.addParType(par);
+		AbsFunDecl fun = null;
+		AbsProcDecl proc = null;
+		if(imaginaryDeclarationNode instanceof AbsFunDecl) {
+			fun = (AbsFunDecl) imaginaryDeclarationNode;
+			SemDesc.setActualType(fun, type);
+		} else if(imaginaryDeclarationNode instanceof AbsProcDecl) {
+			proc = (AbsProcDecl) imaginaryDeclarationNode;
+			SemDesc.setActualType(proc, type);
+		}
+	}
 
+	public SemTypeChecker() {
+		// procedure, return type void
+		addTypeToFunction("putint", new SemAtomType(SemAtomType.INT), new SemAtomType(SemAtomType.VOID));
+		addTypeToFunction("putch", new SemAtomType(SemAtomType.CHAR), new SemAtomType(SemAtomType.VOID));
+		// function, return type not void
+		addTypeToFunction("getch", null, new SemAtomType(SemAtomType.CHAR));
+		addTypeToFunction("getint", null, new SemAtomType(SemAtomType.INT));
+		addTypeToFunction("ord", new SemAtomType(SemAtomType.CHAR), new SemAtomType(SemAtomType.INT));
+		addTypeToFunction("chr", new SemAtomType(SemAtomType.INT), new SemAtomType(SemAtomType.CHAR));
+		addTypeToFunction("free", new SemPointerType(new SemAtomType(SemAtomType.VOID)), new SemAtomType(SemAtomType.VOID));
+	}
+	
+	
 	@Override
 	public void visit(AbsAlloc acceptor) {
 		/*
@@ -97,8 +127,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 			} else {
 				error("You can only assign items of equal atom or equal pointer types !", acceptor);
 			}
-		} //else error("Cannot find types!", acceptor);
-
+		}
 	}
 
 	@Override
@@ -196,12 +225,18 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 							SemDesc.setActualType(acceptor, new SemAtomType(SemAtomType.INT));
 						} else error("Can only perform the *, +, - and / operations on integers!",acceptor);
 					}else error("Can only perform the *, +, - and / operations on integers!", acceptor);
+				} else if(type1 instanceof SemAtomType && type2 instanceof SemAtomType) {
+					if(((SemAtomType)type1).type == SemAtomType.INT && ((SemAtomType)type2).type == SemAtomType.BOOL) {
+						
+					} else if(((SemAtomType)type2).type == SemAtomType.INT && ((SemAtomType)type1).type == SemAtomType.BOOL) {
+						
+					}
+					
 				} else error("Can only perform the *, +, - and / operations on integers!", acceptor);
-			} //else error("Cannot get types for these items.", acceptor); // NOT NEDED
+			}
 			break;	
 		}
 		
-		//SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.sndExpr));
 	}
 
 	@Override
@@ -232,6 +267,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 			if (type.coercesTo(thisType)){
 				SemSubprogramType sub = (SemSubprogramType) type;
 				SemDesc.setActualType(acceptor, sub.getResultType());
+				
 			}else{
 				error("Subprogram call parameters do not match the declared function parameters!", acceptor);
 			}
@@ -506,6 +542,7 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 	@Override
 	public void visit(AbsValName acceptor) {
 		AbsDecl decl = SemDesc.getNameDecl(acceptor);
+
 		// in this node the SemNameResolver should have created a name declaration
 		SemType type = SemDesc.getActualType(decl);
 		if (decl instanceof AbsFunDecl){
@@ -560,6 +597,30 @@ Izraz ''[ type ]'' za dodeljevanje pomnilnika, pri katerem je ''type'' opis tipa
 	private void error(String msg, AbsTree el) {
 		Report.warning(msg, el.begLine, el.begColumn, el.endLine, el.endColumn);
 		error = true;
+	}
+
+	@Override
+	public void visit(QMarkStmt acceptor) {
+		//if(acceptor.cond)
+		acceptor.cond.accept(this);
+		
+		SemType type = SemDesc.getActualType(acceptor.cond);
+		if(type == null)
+			error("Cannot get condition type!", acceptor);
+		else if(!(type instanceof SemAtomType && ((SemAtomType)type).type == SemAtomType.BOOL))
+			error("Wrong question mark statement condition type!", acceptor);
+		
+		
+		acceptor.stmt1.accept(this);
+		acceptor.stmt2.accept(this);
+		
+		SemType type1 = SemDesc.getActualType(acceptor.stmt1);
+		SemType type2 = SemDesc.getActualType(acceptor.stmt2);
+		
+
+		if(!type1.coercesTo(type2)) {
+			error("Question mark statements have to be of the same type!", acceptor);
+		}
 	}
 
 }

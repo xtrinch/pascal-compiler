@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type='text/xsl' href='xsl/lincode.xsl'?>
+<lincode>
+<datachunk label="_i" size="4"/>
+<datachunk label="_p" size="4"/>
+<codechunk value="L0">
+<frmnode>
+<frm kind="level" value="0"/>
+<frm kind="label" value="L0"/>
+<frm kind="size" value="16"/>
+<frm kind="FP" value="T12"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="TEMP" value="T12"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T14"/>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="TEMP" value="T12"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T15"/>
+<imcnode kind="CALL" value="_putint">
+<imcnode kind="TEMP" value="T13"/>
+<imcnode kind="TEMP" value="T14"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="TEMP" value="T15"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T16"/>
+<imcnode kind="TEMP" value="T12"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T17"/>
+<imcnode kind="CONST" value="32"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T18"/>
+<imcnode kind="CALL" value="_putch">
+<imcnode kind="TEMP" value="T16"/>
+<imcnode kind="TEMP" value="T17"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="TEMP" value="T18"/>
+</imcnode>
+</imcnode>
+</codechunk>
+<codechunk value="_main">
+<frmnode>
+<frm kind="level" value="0"/>
+<frm kind="label" value="_main"/>
+<frm kind="size" value="16"/>
+<frm kind="FP" value="T11"/>
+</frmnode>
+<imcnode kind="SEQ">
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="CONST" value="0"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T20"/>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T21"/>
+<imcnode kind="CALL" value="_malloc">
+<imcnode kind="TEMP" value="T19"/>
+<imcnode kind="TEMP" value="T20"/>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_p"/>
+</imcnode>
+<imcnode kind="TEMP" value="T21"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="BINOP" value="*">
+<imcnode kind="BINOP" value="-">
+<imcnode kind="CONST" value="1"/>
+<imcnode kind="CONST" value="0"/>
+</imcnode>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_p"/>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="CONST" value="2"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="0"/>
+</imcnode>
+<imcnode kind="LABEL" value="L3"/>
+<imcnode kind="CJUMP" value="L1,L4">
+<imcnode kind="BINOP" value="&#60;=">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="2"/>
+</imcnode>
+</imcnode>
+<imcnode kind="LABEL" value="L4"/>
+<imcnode kind="JUMP" value="L2"/>
+<imcnode kind="LABEL" value="L1"/>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T22"/>
+<imcnode kind="MEM">
+<imcnode kind="TEMP" value="T11"/>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T23"/>
+<imcnode kind="MEM">
+<imcnode kind="BINOP" value="+">
+<imcnode kind="BINOP" value="*">
+<imcnode kind="BINOP" value="-">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="0"/>
+</imcnode>
+<imcnode kind="CONST" value="4"/>
+</imcnode>
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_p"/>
+</imcnode>
+</imcnode>
+</imcnode>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="TEMP" value="T24"/>
+<imcnode kind="CALL" value="L0">
+<imcnode kind="TEMP" value="T22"/>
+<imcnode kind="TEMP" value="T23"/>
+</imcnode>
+</imcnode>
+<imcnode kind="EXP">
+<imcnode kind="TEMP" value="T24"/>
+</imcnode>
+<imcnode kind="MOVE">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="BINOP" value="+">
+<imcnode kind="MEM">
+<imcnode kind="NAME" value="_i"/>
+</imcnode>
+<imcnode kind="CONST" value="1"/>
+</imcnode>
+</imcnode>
+<imcnode kind="JUMP" value="L3"/>
+<imcnode kind="LABEL" value="L2"/>
+</imcnode>
+</codechunk>
+</lincode>

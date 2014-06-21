@@ -10,6 +10,9 @@ import compiler.semanal.type.*;
 /** Dostop do lokalne spremenljivke.  */
 public class FrmLocAccess extends FrmAccess {
 
+	////// HAS IT BEEN ASSIGNED YET?
+	public int hasValue = 0;
+	
 	/** Opis spremenljivke.  */
 	public AbsVarDecl var;
 

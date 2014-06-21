@@ -3,6 +3,7 @@ package compiler.imcode;
 import java.io.*;
 import java.util.*;
 
+import compiler.abstree.tree.VisibilityType;
 import compiler.frames.*;
 
 public class ImcCALL extends ImcExpr {
@@ -12,10 +13,14 @@ public class ImcCALL extends ImcExpr {
 
 	/** Argumenti funkcijskega klica (vkljucno s FP).  */
 	public LinkedList<ImcExpr> args;
+	
+	/** Velikost argumentov (vklju"cno s FP).  */
+	public LinkedList<Integer> size;
 
 	public ImcCALL(FrmLabel label) {
 		this.label = label;
 		this.args = new LinkedList<ImcExpr>();
+		this.size = new LinkedList<Integer>();
 	}
 
 	@Override
@@ -39,11 +44,12 @@ public class ImcCALL extends ImcExpr {
 			ImcExpr arg = args.next();
 			ImcESEQ linArg = arg.linear();
 			linStmt.stmts.addAll(((ImcSEQ)linArg.stmt).stmts);
-			linStmt.stmts.add(new ImcMOVE(new ImcTEMP(temp), linArg.expr));
+			linStmt.stmts.add(new ImcMOVE(new ImcTEMP(temp), linArg.expr, new VisibilityType(VisibilityType.PUBLIC)));
 			linCall.args.add(new ImcTEMP(temp));
 		}
+		linCall.size = this.size;
 		FrmTemp temp = new FrmTemp();
-		linStmt.stmts.add(new ImcMOVE(new ImcTEMP(temp), linCall));
+		linStmt.stmts.add(new ImcMOVE(new ImcTEMP(temp), linCall, new VisibilityType(VisibilityType.PUBLIC)));
 		return new ImcESEQ(linStmt, new ImcTEMP(temp));
 	}
 

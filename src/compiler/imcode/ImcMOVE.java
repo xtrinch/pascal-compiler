@@ -2,6 +2,8 @@ package compiler.imcode;
 
 import java.io.*;
 
+import compiler.abstree.tree.VisibilityType;
+
 public class ImcMOVE extends ImcStmt {
 
 	/** Ponor.  */
@@ -10,9 +12,14 @@ public class ImcMOVE extends ImcStmt {
 	/** Izvor.  */
 	public ImcExpr src;
 
-	public ImcMOVE(ImcExpr dst, ImcExpr src) {
+	
+	public VisibilityType dstVisType;
+	
+	public ImcMOVE(ImcExpr dst, ImcExpr src, VisibilityType type) {
+		if(dst == null)	System.out.println("null pointer");
 		this.dst = dst;
 		this.src = src;
+		this.dstVisType = type;
 	}
 
 	@Override
@@ -30,7 +37,7 @@ public class ImcMOVE extends ImcStmt {
 		ImcESEQ src = this.src.linear();
 		lin.stmts.addAll(((ImcSEQ)dst.stmt).stmts);
 		lin.stmts.addAll(((ImcSEQ)src.stmt).stmts);
-		lin.stmts.add(new ImcMOVE(dst.expr, src.expr));
+		lin.stmts.add(new ImcMOVE(dst.expr, src.expr, this.dstVisType));
 		return lin;
 	}
 

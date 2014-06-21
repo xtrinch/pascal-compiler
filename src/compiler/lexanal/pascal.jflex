@@ -106,6 +106,8 @@ int bracketCount = 0;
 	"type"							{ return sym(PascalTok.TYPE); }
 	"var"							{ return sym(PascalTok.VAR); }
 	"while"							{ return sym(PascalTok.WHILE); }
+	"private"						{ return sym(PascalTok.PRIVATE); }
+	"single"						{ return sym(PascalTok.SINGLE);	}
 	
 	// names of atomic data structures
 	"boolean"						{ return sym(PascalTok.BOOL); }
@@ -147,6 +149,7 @@ int bracketCount = 0;
 	"<>"							{ return sym(PascalTok.NEQ); }
 	"^"								{ return sym(PascalTok.PTR); }
 	"-"								{ return sym(PascalTok.SUB); }
+	"?"								{ return sym(PascalTok.QMARK); }
 
 	.								{ compiler.report.Report.error("Character not recognizable as valid Pascal keyword, symbol, name, identifier or constant.", yyline+1, yycolumn+1, -1); }
 
